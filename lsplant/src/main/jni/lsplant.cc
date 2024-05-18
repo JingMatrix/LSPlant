@@ -546,7 +546,7 @@ void *GenerateTrampolineFor(art::ArtMethod *hook) {
             }
             count = 0;
             tl.address = address;
-            kPageSize == 16384 ? tl.count16k = count + 1 : tl.count4k = count + 1;
+            if (kPageSize == 16384) { tl.count16k = count + 1; } else { tl.count4k = count + 1; }
             trampoline_pool.store(tl.address, std::memory_order_release);
             trampoline_lock.clear(std::memory_order_release);
             trampoline_lock.notify_all();
