@@ -1,3 +1,4 @@
+.cache
 *.iml
 .gradle
 /local.properties

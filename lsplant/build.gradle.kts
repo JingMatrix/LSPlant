@@ -58,6 +58,7 @@ android {
         cmake {
             path = file("src/main/jni/CMakeLists.txt")
             version = androidCmakeVersion
+            buildStagingDirectory = layout.buildDirectory.get().asFile
         }
     }
     namespace = "org.lsposed.lsplant"
@@ -83,6 +84,7 @@ cmaker {
         abiFilters("armeabi-v7a", "arm64-v8a", "x86", "x86_64", "riscv64")
         cppFlags += flags
         cFlags += flags
+        arguments += "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
     }
     buildTypes {
         when (it.name) {
