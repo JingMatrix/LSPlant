@@ -50,6 +50,8 @@ struct InitInfo {
     /// \brief The symbol prefix resolver to \p libart.so. May be null.
     ArtSymbolPrefixResolver art_symbol_prefix_resolver;
 
+    /// \brief Whether using PLT hooking strategy.
+    bool is_plt_hook = false;
     /// \brief The generated class name. Must not be empty. It contains a field and a method
     /// and they could be set by \p generated_field_name and \p generated_method_name respectively.
     std::string_view generated_class_name = "LSPHooker_";

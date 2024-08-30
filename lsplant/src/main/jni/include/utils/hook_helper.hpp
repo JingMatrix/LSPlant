@@ -88,13 +88,13 @@ struct HookHandler {
     template <FixedString Sym, typename Ret, typename... Args>
     [[gnu::always_inline]] bool hook(Hooker<Sym, Ret(Args...)> &hooker) const {
         return hooker.function_ = reinterpret_cast<Ret (*)(Args...)>(
-                   hook(dlsym<Sym>(), reinterpret_cast<void *>(hooker.replace_)));
+                   hook<Sym>(reinterpret_cast<void *>(hooker.replace_)));
     }
 
     template <FixedString Sym, typename This, typename Ret, typename... Args>
     [[gnu::always_inline]] bool hook(MemberHooker<Sym, This, Ret(Args...)> &hooker) const {
         return hooker.function_ = memfun_cast<This>(reinterpret_cast<Ret (*)(This *, Args...)>(
-                   hook(dlsym<Sym>(), reinterpret_cast<void *>(hooker.replace_))));
+                   hook<Sym>(reinterpret_cast<void *>(hooker.replace_))));
     }
 
     template <typename T1, typename T2, typename... U>
@@ -116,9 +116,11 @@ private:
         return nullptr;
     }
 
-    void *hook(void *original, void *replace) const {
+    template <FixedString Sym>
+    void *hook(void *replace) const {
+        auto *original = info_.is_plt_hook ? Sym.data : dlsym<Sym>();
         if (original) {
-            return info_.inline_hooker(original, replace);
+            return info_.inline_hooker(const_cast<void *>(original), replace);
         }
         return nullptr;
     }
