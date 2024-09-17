@@ -1,6 +1,6 @@
 [submodule "dex_builder"]
 	path = lsplant/src/main/jni/external/dex_builder
-	url = https://github.com/LSPosed/DexBuilder.git
+	url = https://github.com/JingMatrix/DexBuilder.git
 	branch = master
 [submodule "docs/doxygen-awesome-css"]
 	path = docs/doxygen-awesome-css
