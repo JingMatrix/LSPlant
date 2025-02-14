@@ -441,7 +441,7 @@ std::tuple<jclass, jfieldID, jmethodID, jmethodID> BuildDex(JNIEnv *env, jobject
     if (auto path_class_loader = JNI_FindClass(env, "dalvik/system/PathClassLoader");
         java_dex_file) {
         auto my_cl = JNI_NewObject(env, path_class_loader, path_class_loader_init,
-                                   JNI_NewStringUTF(env, ""), class_loader);
+                                   JNI_NewStringUTF(env, "/proc/self/task"), class_loader);
         target_class =
             JNI_Cast<jclass>(
                 JNI_CallObjectMethod(env, java_dex_file, load_class,
