@@ -167,14 +167,15 @@ private:
 public:
     static bool Init(JNIEnv *env, const HookHandler &handler) {
         int sdk_int = GetAndroidApiLevel();
+        bool method_FixupStaticTrampolines_hooked = false;
 
         if (sdk_int >= __ANDROID_API_N__ && sdk_int < __ANDROID_API_T__) {
             handler.hook(ShouldUseInterpreterEntrypoint_);
         }
 
-        if (!handler.hook(FixupStaticTrampolinesWithThread_, FixupStaticTrampolines_,
-                          FixupStaticTrampolinesRaw_)) {
-            return false;
+        if (handler.hook(FixupStaticTrampolinesWithThread_, FixupStaticTrampolines_,
+                         FixupStaticTrampolinesRaw_)) {
+            method_FixupStaticTrampolines_hooked = true;
         }
 
         if (!handler.hook(RegisterNativeClassLinker_, RegisterNative_, RegisterNativeFast_,
@@ -184,10 +185,12 @@ public:
             return false;
         }
 
-        if (sdk_int >= __ANDROID_API_R__) {
+        if (!method_FixupStaticTrampolines_hooked && sdk_int >= __ANDROID_API_R__) {
             if constexpr (kArch != Arch::kX86 && kArch != Arch::kX86_64) {
                 // fixup static trampoline may have been inlined
-                handler.hook(AdjustThreadVisibilityCounter_, MarkVisiblyInitialized_);
+                if (!handler.hook(AdjustThreadVisibilityCounter_, MarkVisiblyInitialized_)) {
+                    LOGW("MarkVisiblyInitialized not hooked");
+                }
             }
         }
 
