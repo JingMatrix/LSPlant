@@ -310,6 +310,7 @@ public:
             handler(ShouldUseInterpreterEntrypoint_);
         }
 
+        bool fixup_static_trampolines_hooked;
         if constexpr (is_arch_v<Arch::kX86>) {
             if (handler(FixupStaticTrampolinesWithThread_)) [[likely]] {
                 extern void (*fixup_static_trampolines)(
@@ -325,13 +326,17 @@ public:
                     RestoreBackup(nullptr, Thread::Current());
                 };
 #pragma clang diagnostic pop
+                fixup_static_trampolines_hooked = true;
             } else {
-                handler(FixupStaticTrampolines_, FixupStaticTrampolinesRaw_);
+                fixup_static_trampolines_hooked =
+                    handler(FixupStaticTrampolines_, FixupStaticTrampolinesRaw_);
             }
         } else {
-            handler(FixupStaticTrampolinesWithThread_, FixupStaticTrampolines_,
-                    FixupStaticTrampolinesRaw_);
+            fixup_static_trampolines_hooked =
+                handler(FixupStaticTrampolinesWithThread_, FixupStaticTrampolines_,
+                        FixupStaticTrampolinesRaw_);
         }
+        if (!fixup_static_trampolines_hooked) LOGD("method FixupStaticTrampolines is inlined");
 
         auto register_native_hooked = sdk_int >= kSdkOreo && sdk_int < kSdkPie
                                           ? handler(RegisterNativeFastWithReturn_)
@@ -346,7 +351,11 @@ public:
         if (sdk_int >= kSdkR) {
             if constexpr (!is_arch_v<Arch::kX86, Arch::kAmd64>) {
                 // fixup static trampoline may have been inlined
-                handler(AdjustThreadVisibilityCounter_, MarkVisiblyInitialized_);
+                if (!handler(AdjustThreadVisibilityCounter_, MarkVisiblyInitialized_) &&
+                    !fixup_static_trampolines_hooked) {
+                    // should hook MarkVisiblyInitialized if FixupStaticTrampolines is inlined
+                    LOGW("MarkVisiblyInitialized not hooked");
+                }
             }
         }
 
