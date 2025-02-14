@@ -174,10 +174,9 @@ public:
             handler(ShouldUseInterpreterEntrypoint_);
         }
 
-        if (!handler(FixupStaticTrampolinesWithThread_, FixupStaticTrampolines_,
-                          FixupStaticTrampolinesRaw_)) {
-            return false;
-        }
+        bool method_FixupStaticTrampolines_hooked = handler(FixupStaticTrampolinesWithThread_,
+				FixupStaticTrampolines_, FixupStaticTrampolinesRaw_);
+        if (!method_FixupStaticTrampolines_hooked) LOGD("method FixupStaticTrampolines is inlined");
 
         if (!handler(RegisterNativeClassLinker_, RegisterNative_, RegisterNativeFast_,
                           RegisterNativeThread_) ||
@@ -188,8 +187,11 @@ public:
 
         if (sdk_int >= __ANDROID_API_R__) {
             if constexpr (kArch != Arch::kX86 && kArch != Arch::kX86_64) {
-                // fixup static trampoline may have been inlined
-                handler(AdjustThreadVisibilityCounter_, MarkVisiblyInitialized_);
+                if (!handler(AdjustThreadVisibilityCounter_, MarkVisiblyInitialized_) &&
+                    !method_FixupStaticTrampolines_hooked) {
+                    // should hook MarkVisiblyInitialized if FixupStaticTrampolines is inlined
+                    LOGW("MarkVisiblyInitialized not hooked");
+                }
             }
         }
 
