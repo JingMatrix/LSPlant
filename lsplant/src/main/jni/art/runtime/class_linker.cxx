@@ -178,12 +178,12 @@ public:
 				FixupStaticTrampolines_, FixupStaticTrampolinesRaw_);
         if (!method_FixupStaticTrampolines_hooked) LOGD("method FixupStaticTrampolines is inlined");
 
-        if (!handler(RegisterNativeClassLinker_, RegisterNative_, RegisterNativeFast_,
-                          RegisterNativeThread_) ||
-            !handler(UnregisterNativeClassLinker_, UnregisterNative_, UnregisterNativeFast_,
-                          UnregisterNativeThread_)) {
-            return false;
-        }
+        // if (!handler(RegisterNativeClassLinker_, RegisterNative_, RegisterNativeFast_,
+        //                   RegisterNativeThread_) ||
+        //     !handler(UnregisterNativeClassLinker_, UnregisterNative_, UnregisterNativeFast_,
+        //                   UnregisterNativeThread_)) {
+        //     return false;
+        // }
 
         if (sdk_int >= __ANDROID_API_R__) {
             if constexpr (kArch != Arch::kX86 && kArch != Arch::kX86_64) {
