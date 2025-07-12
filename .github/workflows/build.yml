@@ -5,6 +5,7 @@ on:
     branches: ["master"]
     paths-ignore:
       - 'README.md'
+  workflow_dispatch:
   pull_request:
 
 
@@ -154,7 +155,7 @@ jobs:
           - api-level: 35
             target: default
             arch: x86_64
-          - api-level: Baklava
+          - api-level: 36
             target: google_apis
             arch: x86_64
     steps:
