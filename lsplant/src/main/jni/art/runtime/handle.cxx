@@ -1,6 +1,9 @@
-export module lsplant:handle;
+module;
 
-import std;
+#include <cstdint>
+#include <type_traits>
+
+export module lsplant:handle;
 
 import :art_method;
 
@@ -22,12 +25,12 @@ export {
 
     template <bool kPoisonReferences, class MirrorType>
     class alignas(4) [[gnu::packed]] ObjectReference {
-        static MirrorType *Decompress(std::uint32_t ref) {
-            std::uintptr_t as_bits = kPoisonReferences ? -ref : ref;
+        static MirrorType *Decompress(uint32_t ref) {
+            uintptr_t as_bits = kPoisonReferences ? -ref : ref;
             return reinterpret_cast<MirrorType *>(as_bits);
         }
 
-        std::uint32_t reference_;
+        uint32_t reference_;
 
     public:
         MirrorType *AsMirrorPtr() const { return Decompress(reference_); }
