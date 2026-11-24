@@ -6,8 +6,6 @@ module;
 
 export module lsplant:class_linker;
 
-import std;
-
 import :art_method;
 import :thread;
 import :common;

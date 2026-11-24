@@ -6,8 +6,6 @@ module;
 
 export module lsplant:clazz;
 
-import std;
-
 import :common;
 import :art_method;
 import :thread;

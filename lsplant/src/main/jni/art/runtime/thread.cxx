@@ -2,8 +2,6 @@ module;
 
 export module lsplant:thread;
 
-import std;
-
 import hook_helper;
 
 namespace lsplant::art {

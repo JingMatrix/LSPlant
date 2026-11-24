@@ -4,8 +4,6 @@ module;
 
 export module lsplant:scope_gc_critical_section;
 
-import std;
-
 import :thread;
 import :common;
 import hook_helper;

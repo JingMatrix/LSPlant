@@ -101,8 +101,6 @@ cmaker {
 }
 
 dependencies {
-    "debugCompileOnly"(libs.cxx.full)
-    "releaseCompileOnly"(libs.cxx.full)
     "standaloneCompileOnly"(libs.cxx)
 }
 

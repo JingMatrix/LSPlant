@@ -4,8 +4,6 @@ module;
 
 export module lsplant:instrumentation;
 
-import std;
-
 import :art_method;
 import :common;
 import hook_helper;
